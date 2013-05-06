@@ -7,6 +7,7 @@ pl:
   currency: Waluta
   accname: Nazwa sprzedawcy
   Address: Adres
+  url: Url płatności
   Delivery: Dostawa
   Payment: Płatność
   Confirm: Potwierdzenie

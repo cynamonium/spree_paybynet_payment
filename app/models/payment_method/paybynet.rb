@@ -1,5 +1,5 @@
 class PaymentMethod::Paybynet < Spree::PaymentMethod
-  attr_accessible :preferred_id_client, :preferred_account, :preferred_currency, :preferred_accname 
+  attr_accessible :preferred_id_client, :preferred_url, :preferred_password, :preferred_account, :preferred_currency, :preferred_accname 
 
   #paybynet settings
 
@@ -7,6 +7,8 @@ class PaymentMethod::Paybynet < Spree::PaymentMethod
   preference :account, :string
   preference :currency, :string, :default => "PLN"
   preference :accname, :string
+  preference :url, :string, :default => "https://pbn.paybynet.com.pl/PayByNetT/trans.do"
+  preference :password, :string 
 
 
 

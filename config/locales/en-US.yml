@@ -6,6 +6,7 @@ en:
   id_client: Client ID
   account: Bank account
   currency: Currency
+  url: Payment url
   accname: Seller name 
   Address: Address
   Delivery: Delivery

@@ -1,11 +1,10 @@
-<%= @hashtrans %>
-  <%= form_tag @gateway.preferred_url, :id => "pay", :method => "post" do %>
+<%= form_tag @gateway.preferred_url, :id => "pay", :method => "post" do %>
 
     <%= hidden_field_tag 'hashtrans', @hashtrans %>
 
     <%= submit_tag "Pay", :style => "display: none;" %>
     <p>trwa przekierowanie do strony płatności...</p>
-  <% end %>
+<% end %>
 
 <script>
    function exec () {

@@ -1,0 +1,15 @@
+---
+en:
+  payment_success: Payment Success
+  currency: Currency
+  account_id: Account Id
+  id_client: Client ID
+  account: Bank account
+  currency: Currency
+  accname: Seller name 
+  Address: Address
+  Delivery: Delivery
+  Payment: Payment
+  Confirm: Confirm
+  Complete: Complete
+  

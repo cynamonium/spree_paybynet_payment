@@ -1,0 +1,14 @@
+---
+pl:
+  payment_success: Płatność poprawna
+  currency: Waluta
+  id_client: ID sprzedawcy
+  account: Nr konta bankowego
+  currency: Waluta
+  accname: Nazwa sprzedawcy
+  Address: Adres
+  Delivery: Dostawa
+  Payment: Płatność
+  Confirm: Potwierdzenie
+  Complete: Koniec
+

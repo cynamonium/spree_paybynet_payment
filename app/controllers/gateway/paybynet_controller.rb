@@ -50,7 +50,7 @@ class Gateway::PaybynetController < Spree::BaseController
 
     hash = Digest::SHA1.hexdigest(xml + "<password>"+gateway.preferred_password+"</password>")
 
-    xml << "<hash>".hash."</hash>"
+    xml << "<hash>"+hash+"</hash>"
 
     #Base64.encode64(xml)
 

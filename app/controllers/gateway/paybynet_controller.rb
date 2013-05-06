@@ -41,7 +41,7 @@ class Gateway::PaybynetController < Spree::BaseController
     xml = "<id_client>"+gateway.preferred_id_client+"</id_client>"
     xml << "<id_trans>"+order.number+"</id_trans>"
     xml << "<date_valid>"+time.strftime("%Y-%m-%d %H:%M:%S")+"</date_valid>" 
-    xml << "<amount>"+number_with_delimiter(order.total.to_s,  :delimiter => ',')+"</amount><currency>PLN</currency>"
+    xml << "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
     xml << "<email>"+order.user.try(:email)+"</email>"
     xml << "<account>"+gateway.preferred_account+"</account>"
     xml << "<accname>"+gateway.preferred_accname+"</accname>"

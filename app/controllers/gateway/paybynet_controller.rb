@@ -1,4 +1,5 @@
-require 'digest/md5'
+require 'digest/sha1'
+require 'base64'
 
 class Gateway::PaybynetController < Spree::BaseController
   skip_before_filter :verify_authenticity_token, :only => [:comeback, :complete]
@@ -16,10 +17,11 @@ class Gateway::PaybynetController < Spree::BaseController
     else
       @bill_address, @ship_address = @order.bill_address, (@order.ship_address || @order.bill_address)
     end
+    @hashtrans = hashtrans(@order, @gateway)
     render(:layout => false)
   end
 
-  # redirecting from dotpay.pl
+  
   def complete
     @order = Spree::Order.find(session[:order_id])
     session[:order_id] = nil
@@ -27,27 +29,32 @@ class Gateway::PaybynetController < Spree::BaseController
     redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token}), :notice => "Dotpay correct"
   end
 
-  # Result from Dotpay
-  def comeback
-    @order = Spree::Order.find_by_number(params[:control])
-    @gateway = @order && @order.payments.first.payment_method
-
-    if paybynet_validate(@gateway, params, request.remote_ip)
-      if params[:t_status]=="2" # dotpay state for payment confirmed
-        paybynet_payment_success(params)
-      elsif params[:t_status] == "4" or params[:t_status] == "5" #dotpay states for cancellation and so on
-        paybynet_payment_cancel(params)
-      elsif params[:t_status] == "1"  #dotpay state for starting payment processing (1)
-        paybynet_payment_new(params)
-      end
-      render :text => "OK"
-    else
-      render :text => "Not valid"
-    end
+  def reject_url
   end
 
 
   private
+
+  def hashtrans(order, gateway)
+    time = Time.new
+
+    xml = "<id_client>"+gateway.preferred_id_client+"</id_client>"
+    xml << "<id_trans>"+order.number+"</id_trans>"
+    xml << "<date_valid>"+time.strftime("%Y-%m-%d %H:%M:%S")+"</date_valid>" 
+    xml << "<amount>"+order.total.to_s+"</amount><currency>PLN</currency>"
+    xml << "<email>"+order.user.try(:email)+"</email>"
+    xml << "<account>"+gateway.preferred_account+"</account>"
+    xml << "<accname>"+gateway.preferred_accname+"</accname>"
+    xml << "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
+    xml << "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
+
+    hash = Digest::SHA1.hexdigest(xml + "<password>"+gateway.preferred_password+"</password>")
+
+    xml << "<hash>".hash."</hash>"
+
+    #Base64.encode64(xml)
+
+  end
 
   # validating dotpay message
   def paybynet_validate(gateway, params, remote_ip)

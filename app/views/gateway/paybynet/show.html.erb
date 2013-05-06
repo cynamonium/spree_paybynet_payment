@@ -1,4 +1,4 @@
-
+<%= @hashtrans %>
   <%= form_tag @gateway.preferred_url, :id => "pay", :method => "post" do %>
 
     <%= hidden_field_tag 'hashtrans', @hashtrans %>
@@ -9,7 +9,7 @@
 
 <script>
    function exec () {
-        var frm = document.getElementById("pay");
+        var frm = document.getElementById("##pay");
         frm.submit();
     }
    window.onload = exec;

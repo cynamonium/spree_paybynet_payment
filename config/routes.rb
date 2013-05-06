@@ -4,5 +4,6 @@ Rails.application.routes.draw do
     match '/paybynet/:gateway_id/:order_id' => 'paybynet#show', :as => :paybynet
     match '/paybynet/comeback/' => 'paybynet#comeback', :as => :paybynet_comeback
     match '/paybynet/complete' => 'paybynet#complete', :as => :paybynet_complete
+    match '/paybynet/reject' => 'paybynet#reject', :as => :paybynet_reject
   end
 end

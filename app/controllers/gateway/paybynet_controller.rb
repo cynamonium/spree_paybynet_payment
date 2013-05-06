@@ -52,7 +52,7 @@ class Gateway::PaybynetController < Spree::BaseController
 
     xml << "<hash>"+hash+"</hash>"
 
-    #Base64.encode64(xml)
+    Base64.encode64(xml)
 
   end
 

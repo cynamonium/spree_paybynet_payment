@@ -1,5 +1,4 @@
 require 'digest/sha1'
-require 'base64'
 
 class Gateway::PaybynetController < Spree::BaseController
   skip_before_filter :verify_authenticity_token, :only => [:comeback, :complete]
@@ -33,28 +32,30 @@ class Gateway::PaybynetController < Spree::BaseController
   end
 
 
-  private
-
   def hashtrans(order, gateway)
     time = Time.new
 
     xml = "<id_client>"+gateway.preferred_id_client+"</id_client>"
-    xml << "<id_trans>"+order.number+"</id_trans>"
-    xml << "<date_valid>"+time.strftime("%Y-%m-%d %H:%M:%S")+"</date_valid>" 
-    xml << "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
-    xml << "<email>"+order.user.try(:email)+"</email>"
-    xml << "<account>"+gateway.preferred_account+"</account>"
-    xml << "<accname>"+gateway.preferred_accname+"</accname>"
-    xml << "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
-    xml << "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
+    xml += "<id_trans>"+order.number+"</id_trans>"
+    xml += "<date_valid>"+time.strftime("%Y-%m-%d %H:%M:%S")+"</date_valid>" 
+    xml += "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
+    xml += "<email>"+order.user.try(:email)+"</email>"
+    xml += "<account>"+gateway.preferred_account+"</account>"
+    xml += "<accname>"+gateway.preferred_accname+"</accname>"
+    xml += "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
+    xml += "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
 
     hash = Digest::SHA1.hexdigest(xml + "<password>"+gateway.preferred_password+"</password>")
 
-    xml << "<hash>"+hash+"</hash>"
+    xml += "<hash>"+hash+"</hash>"
 
-    Base64.encode64(xml)
+    @xm = xml
+
+    ActiveSupport::Base64.encode64(xml)
 
   end
+
+  private
 
   # validating dotpay message
   def paybynet_validate(gateway, params, remote_ip)

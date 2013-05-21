@@ -1,15 +1,9 @@
+<%= @xm %>
 <%= form_tag @gateway.preferred_url, :id => "pay", :method => "post" do %>
 
     <%= hidden_field_tag 'hashtrans', @hashtrans %>
 
-    <%= submit_tag "Pay", :style => "display: none;" %>
+    <%= submit_tag "Pay" %>
     <p>trwa przekierowanie do strony płatności...</p>
 <% end %>
 
-<script>
-   function exec () {
-        var frm = document.getElementById("pay");
-        frm.submit();
-    }
-   window.onload = exec;
-</script>

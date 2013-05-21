@@ -1,3 +1,6 @@
+# -*- encoding : utf-8 -*-
+#!/bin/env ruby
+# encoding: utf-8
 require 'digest/sha1'
 
 class Gateway::PaybynetController < Spree::BaseController

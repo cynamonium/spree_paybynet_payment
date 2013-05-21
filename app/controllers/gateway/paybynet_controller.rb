@@ -24,11 +24,33 @@ class Gateway::PaybynetController < Spree::BaseController
   def complete
     @order = Spree::Order.find(session[:order_id])
     session[:order_id] = nil
-     @order.update_attributes({:state => "complete", :completed_at => Time.now}, :without_protection => true)
-    redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token}), :notice => "Dotpay correct"
+    @order.update_attributes({:state => "complete", :completed_at => Time.now}, :without_protection => true)
+    redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token}), :notice => "Paybynet correct"
   end
 
-  def reject_url
+  def reject
+    redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token}), :notice => "Paybynet not correct"
+  end
+
+  def comeback
+    newStatus = params[:newStatus] #status transakcji
+    transAmount = params[:transAmount]
+    paymentId = params[:paymentId] #identyfikator transakcji przekazane ze sklepu.
+    hash = params[:hash] #skrót SHA1 z połączenia : newStatus + transAmount + paymentId + password
+
+    @order = Spree::Order.find(paymentId)
+    @gateway = @order.available_payment_methods.find{|x| x.id == params[:gateway_id].to_i }
+
+    check = Digest::SHA1.hexdigest(newStatus + transAmount + paymentId + gateway.preferred_password)
+
+    if check==hash
+      if newStatus==2203 || newStatus==2303
+          paybynet_payment_success(params,@order)
+      end
+    else
+      render :text => "Hash not correct", :layout => false
+    end
+    render :text => "Hash correct", :layout => false
   end
 
 
@@ -41,7 +63,7 @@ class Gateway::PaybynetController < Spree::BaseController
     xml += "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
     xml += "<email>"+order.user.try(:email)+"</email>"
     xml += "<account>"+gateway.preferred_account+"</account>"
-    xml += "<accname>"+gateway.preferred_accname+"</accname>"
+    xml += "<accname>"+gateway.preferred_accname+"^NM^30-394^ZP^Kraków^CI^ul. Skotnicka 78^ST^Polska^CT^</accname>"
     xml += "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
     xml += "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
 
@@ -57,41 +79,21 @@ class Gateway::PaybynetController < Spree::BaseController
 
   private
 
-  # validating dotpay message
-  def paybynet_validate(gateway, params, remote_ip)
-    calc_md5 = Digest::MD5.hexdigest(@gateway.preferred_pin + ":" +
-      (params[:id].nil? ? "" : params[:id]) + ":" +
-      (params[:control].nil? ? "" : params[:control]) + ":" +
-      (params[:t_id].nil? ? "" : params[:t_id]) + ":" +
-      (params[:amount].nil? ? "" : params[:amount]) + ":" +
-      (params[:email].nil? ? "" : params[:email]) + ":" +
-      (params[:service].nil? ? "" : params[:service]) + ":" +
-      (params[:code].nil? ? "" : params[:code]) + ":" +
-      ":" +
-      ":" +
-      (params[:t_status].nil? ? "" : params[:t_status]))
-      md5_valid = (calc_md5 == params[:md5])
-
-      if (remote_ip == @gateway.preferred_dotpay_server_1 || remote_ip == @gateway.preferred_dotpay_server_2) && md5_valid
-        valid = true #yes, it is
-      else
-       valid = false #no, it isn't
-      end
-      valid
-  end
-
   # Completed payment process
-  def paybynet_payment_success(params)
-    @order.payment.started_processing
-    if @order.total.to_f == params[:amount].to_f
-      @order.payment.complete
+  def paybynet_payment_success(params, order)
+    order.payments.first.started_processing!
+    if order.total.to_f == params[:transAmount].to_f
+      cash = order.payments.first
+      cash.amount = params[:transAmount].to_f
+      cash.save
+      order.payments.first.complete
+      order.payment_state = 'paid'
     end
 
-    @order.finalize!
-
-    @order.next
-    @order.next
-    @order.save
+    order.finalize!
+    order.next
+    order.next
+    order.save
   end
 
   # payment cancelled by user (dotpay signals 3 to 5)

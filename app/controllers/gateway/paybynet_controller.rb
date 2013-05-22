@@ -58,7 +58,7 @@ class Gateway::PaybynetController < Spree::BaseController
 
 
   def hashtrans(order, gateway)
-    time = Time.new + 60.minutes
+    time = Time.new + 3.days
 
     xml = "<id_client>"+gateway.preferred_id_client+"</id_client>"
     xml += "<id_trans>"+order.number+"</id_trans>"

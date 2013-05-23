@@ -35,7 +35,7 @@ class Gateway::PaybynetController < Spree::BaseController
   end
 
   def reject
-    redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token}), :notice => "Paybynet not correct"
+    redirect_to order_url(@order, {:checkout_complete => true}), :notice => "Paybynet not correct"
   end
 
   def comeback

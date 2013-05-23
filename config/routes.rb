@@ -5,5 +5,6 @@ Rails.application.routes.draw do
     match '/paybynet/comeback/' => 'paybynet#comeback', :as => :paybynet_comeback
     match '/paybynet/complete' => 'paybynet#complete', :as => :paybynet_complete
     match '/paybynet/reject' => 'paybynet#reject', :as => :paybynet_reject
+    match '/paybynet/notify' => 'paybynet#notify', :as => :paybynet_notify
   end
 end

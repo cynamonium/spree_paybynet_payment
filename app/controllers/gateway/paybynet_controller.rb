@@ -44,10 +44,10 @@ class Gateway::PaybynetController < Spree::BaseController
   end
 
   def comeback
-    newStatus = params[:params][:newStatus] #status transakcji
-    transAmount = params[:params][:transAmount]
-    paymentId = params[:params][:paymentId] #identyfikator transakcji przekazane ze sklepu.
-    #hash = params[:hash] #skrót SHA1 z połączenia : newStatus + transAmount + paymentId + password
+    newStatus = params[:newStatus] #status transakcji
+    transAmount = params[:transAmount]
+    paymentId = params[:paymentId] #identyfikator transakcji przekazane ze sklepu.
+    hash = params[:hash] #skrót SHA1 z połączenia : newStatus + transAmount + paymentId + password
 
     @order = Spree::Order.find_by_number(paymentId)
     gateway = @order && @order.payments.first.payment_method
@@ -98,7 +98,7 @@ class Gateway::PaybynetController < Spree::BaseController
   # Completed payment process
   def paybynet_payment_success(params, order)
     order.payments.first.started_processing!
-    price = params[:params][:transAmount].to_s.sub!(",", ".")
+    price = params[:transAmount].to_s.sub!(",", ".")
     if order.total.to_f == price.to_f
       cash = order.payments.first
       cash.amount = price.to_f

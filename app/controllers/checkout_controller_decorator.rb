@@ -8,7 +8,7 @@ Spree::CheckoutController.class_eval do
     return unless params[:state] == "payment"
     @payment_method = Spree::PaymentMethod.find(params[:order][:payments_attributes].first[:payment_method_id])
     if @payment_method && @payment_method.kind_of?(PaymentMethod::Paybynet)
-      redirect_to main_app.gateway_paybynet_path(:gateway_id => @payment_method.id, :order_id => @order.id)
+      redirect_to main_app.gateway_paybynet_path(@idbank => params[:idbank], :gateway_id => @payment_method.id, :order_id => @order.id)
     end
   end
 

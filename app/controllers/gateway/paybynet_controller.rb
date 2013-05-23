@@ -91,9 +91,10 @@ class Gateway::PaybynetController < Spree::BaseController
   # Completed payment process
   def paybynet_payment_success(params, order)
     order.payments.first.started_processing!
-    if order.total.to_f == params[:transAmount].to_f
+    price = params[:transAmount].to_s.sub!(",", ".")
+    if order.total.to_f == price.to_f
       cash = order.payments.first
-      cash.amount = params[:transAmount].to_f
+      cash.amount = price.to_f
       cash.save
       order.payments.first.complete
       order.payment_state = 'paid'

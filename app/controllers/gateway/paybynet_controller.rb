@@ -8,6 +8,9 @@ class Gateway::PaybynetController < Spree::BaseController
 
   # Show form Dotpay for pay
   def show
+    if params[:idbank]
+      @idbank = params[:idbank]
+    end
     @order = Spree::Order.find(params[:order_id])
     @gateway = @order.available_payment_methods.find{|x| x.id == params[:gateway_id].to_i }
     @order.payments.destroy_all

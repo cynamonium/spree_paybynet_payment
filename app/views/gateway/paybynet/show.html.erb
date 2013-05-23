@@ -1,5 +1,5 @@
-<% if params[:idbank] %>
-<% @url = @gateway.preferred_url+"?idbank="+params[:idbank] %>
+<% if @idbank %>
+<% @url = @gateway.preferred_url+"?idbank="+@idbank %>
 <% else %>
 <% @url = @gateway.preferred_url %>
 <% end %>

@@ -52,9 +52,9 @@ class Gateway::PaybynetController < Spree::BaseController
 
     if check==hash
       if newStatus=='2203' || newStatus=='2303'
-          paybynet_payment_success(params,@order)
+          return paybynet_payment_success(params,@order)
       else newStatus=='2202' || newStatus=='2302'
-          paybynet_payment_fail(params,@order)
+          return paybynet_payment_fail(params,@order)
       end
     else
       render :text => "FAIL", :layout => false

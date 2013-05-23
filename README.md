@@ -1,9 +1,9 @@
-Paybynet
+Paybynet v 1.0 beta
 ====================
 
 Paybynet payment system for Spree.
 
-Works with Rails 3.2 and Spree 1.3
+Works with Rails 3.2.x and Spree 1.3(not tested with lower versions)
 
 Install
 =======

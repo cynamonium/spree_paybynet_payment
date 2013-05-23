@@ -13,4 +13,8 @@ en:
   Payment: Payment
   Confirm: Confirm
   Complete: Complete
+  postcode: Postcode
+  city: City
+  street: Street
+  country: Country
   

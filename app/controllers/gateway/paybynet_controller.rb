@@ -52,11 +52,13 @@ class Gateway::PaybynetController < Spree::BaseController
     if check==hash
       if newStatus=='2203' || newStatus=='2303'
           paybynet_payment_success(params,@order)
+      else newStatus=='2202' || newStatus=='2302'
+          paybynet_payment_fail(params,@order)
       end
     else
-      render :text => "Hash not correct", :layout => false
+      render :text => "FAIL", :layout => false
     end
-    render :text => "Hash correct", :layout => false
+    render :text => "OK", :layout => false
   end
 
 
@@ -69,7 +71,7 @@ class Gateway::PaybynetController < Spree::BaseController
     xml += "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
     xml += "<email>"+order.user.try(:email)+"</email>"
     xml += "<account>"+gateway.preferred_account+"</account>"
-    xml += "<accname>"+gateway.preferred_accname+"^NM^30-394^ZP^Kraków^CI^ul. Skotnicka 78^ST^Polska^CT^</accname>"
+    xml += "<accname>"+gateway.preferred_accname+"^NM^"+gateway.postcode+"^ZP^"+gateway.city+"^CI^"+gateway.street+"^ST^"+gateway.country+"^CT^</accname>"
     xml += "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
     xml += "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
 
@@ -102,15 +104,13 @@ class Gateway::PaybynetController < Spree::BaseController
     order.save
   end
 
-  # payment cancelled by user (dotpay signals 3 to 5)
-  def paybynet_payment_cancel(params)
-    @order.cancel
+  def paybynet_payment_fail(params, order)
+      order.payments.first.complete
+      order.payment_state = 'fail'
+      order.save
   end
 
-  def paybynet_payment_new(params)
-    @order.payment.started_processing
-    @order.finalize!
-  end
+
 
 end
 

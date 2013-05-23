@@ -12,4 +12,8 @@ pl:
   Payment: Płatność
   Confirm: Potwierdzenie
   Complete: Koniec
+  postcode: Kod pocztowy
+  city: Miasto
+  street: Ulica
+  country: Kraj
 

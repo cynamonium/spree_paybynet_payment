@@ -71,7 +71,7 @@ class Gateway::PaybynetController < Spree::BaseController
     xml += "<amount>"+order.total.to_s.sub!(".", ",")+"</amount><currency>PLN</currency>"
     xml += "<email>"+order.user.try(:email)+"</email>"
     xml += "<account>"+gateway.preferred_account+"</account>"
-    xml += "<accname>"+gateway.preferred_accname+"^NM^"+gateway.postcode+"^ZP^"+gateway.city+"^CI^"+gateway.street+"^ST^"+gateway.country+"^CT^</accname>"
+    xml += "<accname>"+gateway.preferred_accname+"^NM^"+gateway.preferred_postcode+"^ZP^"+gateway.preferred_city+"^CI^"+gateway.preferred_street+"^ST^"+gateway.preferred_country+"^CT^</accname>"
     xml += "<backpage>"+main_app.gateway_paybynet_complete_url(@order.number)+"</backpage>"
     xml += "<backpagereject>"+main_app.gateway_paybynet_reject_url(@order.number)+"</backpagereject>"
 

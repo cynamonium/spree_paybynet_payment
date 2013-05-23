@@ -24,7 +24,7 @@ class Gateway::PaybynetController < Spree::BaseController
   end
 
   def notify
-  
+
   end
 
   def complete
@@ -44,7 +44,7 @@ class Gateway::PaybynetController < Spree::BaseController
     paymentId = params[:paymentId] #identyfikator transakcji przekazane ze sklepu.
     hash = params[:hash] #skrót SHA1 z połączenia : newStatus + transAmount + paymentId + password
 
-    @order = Spree::Order.find(paymentId)
+    @order = Spree::Order.find_by_number(paymentId)
     @gateway = @order.available_payment_methods.find{|x| x.id == params[:gateway_id].to_i }
 
     check = Digest::SHA1.hexdigest(newStatus + transAmount + paymentId + gateway.preferred_password)

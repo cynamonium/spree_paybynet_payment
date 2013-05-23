@@ -35,6 +35,7 @@ class Gateway::PaybynetController < Spree::BaseController
   end
 
   def reject
+    @order = Spree::Order.find(session[:order_id])
     redirect_to order_url(@order, {:checkout_complete => true}), :notice => "Paybynet not correct"
   end
 

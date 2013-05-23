@@ -50,7 +50,7 @@ class Gateway::PaybynetController < Spree::BaseController
     check = Digest::SHA1.hexdigest(newStatus + transAmount + paymentId + gateway.preferred_password)
 
     if check==hash
-      if newStatus==2203 || newStatus==2303
+      if newStatus=='2203' || newStatus=='2303'
           paybynet_payment_success(params,@order)
       end
     else

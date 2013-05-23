@@ -1,4 +1,9 @@
-<%= form_tag @gateway.preferred_url, :id => "pay", :method => "post" do %>
+<% if params[:idbank] %>
+<% @url = @gateway.preferred_url+"?idbank="+params[:idbank] %>
+<% else %>
+<% @url = @gateway.preferred_url %>
+<% end %>
+<%= form_tag @url, :id => "pay", :method => "post" do %>
 
     <%= hidden_field_tag 'hashtrans', @hashtrans %>
 

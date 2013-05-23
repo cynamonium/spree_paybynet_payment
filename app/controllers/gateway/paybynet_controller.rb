@@ -23,7 +23,10 @@ class Gateway::PaybynetController < Spree::BaseController
     render(:layout => false)
   end
 
+  def notify
   
+  end
+
   def complete
     @order = Spree::Order.find(session[:order_id])
     session[:order_id] = nil

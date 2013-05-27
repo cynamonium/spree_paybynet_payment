@@ -56,7 +56,7 @@ class Gateway::PaybynetController < Spree::BaseController
 
     if check==hash
       if newStatus=='2203' || newStatus=='2303'
-          paybynet_payment_success(params,@order)
+          paybynet_payment_success(transAmount.to_f,@order)
           render :text => "OK - payment done", :layout => false
       elsif newStatus=='2202' || newStatus=='2302'
           paybynet_payment_fail(params,@order)
@@ -96,15 +96,15 @@ class Gateway::PaybynetController < Spree::BaseController
   private
 
   # Completed payment process
-  def paybynet_payment_success(params, order)
+  def paybynet_payment_success(price, order)
     order.payments.first.started_processing!
-    if order.total.to_f == params[:transAmount].to_f
+    #if order.total.to_f == params[:transAmount].to_f
       cash = order.payments.first
-      cash.amount = params[:transAmount].to_f
+      cash.amount = price
       cash.save
       order.payments.first.complete
       order.payment_state = 'paid'
-    end
+    #end
 
     order.finalize!
     order.next

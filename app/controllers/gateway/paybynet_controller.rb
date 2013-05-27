@@ -97,17 +97,19 @@ class Gateway::PaybynetController < Spree::BaseController
 
   # Completed payment process
   def paybynet_payment_success(price, order)
-    order.payments.first.started_processing!
-    cash = order.payments.first
-    cash.amount = price
-    cash.save
-    order.payments.first.complete
-    order.payment_state = 'paid'
+    if order.payment_state != 'paid'
+      order.payments.first.started_processing!
+      cash = order.payments.first
+      cash.amount = price
+      cash.save
+      order.payments.first.complete
+      order.payment_state = 'paid'
 
-    order.finalize!
-    order.next
-    order.next
-    order.save
+      order.finalize!
+      order.next
+      order.next
+      order.save
+    end
   end
 
   def paybynet_payment_fail(params, order)

@@ -97,6 +97,7 @@ class Gateway::PaybynetController < Spree::BaseController
 
   # Completed payment process
   def paybynet_payment_success(price, order)
+      sleep(10)
     if order.payment_state != 'paid'
       order.payments.first.started_processing!
       cash = order.payments.first
